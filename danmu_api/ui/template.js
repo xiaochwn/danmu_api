@@ -13,6 +13,7 @@ import { pushDanmuJsContent } from "./js/pushdanmu.js";
 import { requestRecordsJsContent } from "./js/requestrecords.js";
 import { systemSettingsJsContent } from "./js/systemsettings.js";
 import { localDanmuJsContent } from "./js/localdanmu.js";
+import { analyticsJsContent } from "./js/analytics.js";
 
 const localDanmuLatestYear = new Date().getFullYear();
 const localDanmuYearOptions = Array.from({ length: localDanmuLatestYear - 1900 + 1 }, (_, index) => {
@@ -584,6 +585,7 @@ export const HTML_TEMPLATE = /* html */ `
         ${requestRecordsJsContent}
         ${systemSettingsJsContent}
         ${localDanmuJsContent}
+        ${analyticsJsContent}
     </script>
 </body>
 </html>
