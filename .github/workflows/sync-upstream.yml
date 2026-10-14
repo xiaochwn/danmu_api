@@ -1,0 +1,33 @@
+name: Sync fork with upstream
+
+on:
+  schedule:
+    # Every Monday at 01:00 UTC (09:00 Beijing time)
+    - cron: '0 1 * * 1'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Merge upstream changes into fork
+        run: |
+          set -e
+          HTTP_CODE=$(curl -s -o /tmp/merge.json -w '%{http_code}' -X POST \
+            -H 'Accept: application/vnd.github+json' \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/xiaochwn/danmu_api/merge-upstream \
+            -d '{"branch":"main"}')
+          cat /tmp/merge.json
+          echo "HTTP status: $HTTP_CODE"
+          if [ "$HTTP_CODE" = "409" ]; then
+            echo "::error::Fork has diverged; manual merge required."
+            exit 1
+          fi
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::merge-upstream failed with HTTP $HTTP_CODE"
+            exit 1
+          fi
+          echo "Sync finished successfully."
